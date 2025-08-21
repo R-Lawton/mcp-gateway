@@ -77,11 +77,11 @@ jobs:
       - id: golangci_configuration
         uses: andstor/file-existence-action@v1
         with:
-          files: .golangci.yaml
+          files: .golangci.yml
 
       - name: Run Go Lint (golangci-lint via Makefile)
         if: steps.golangci_configuration.outputs.files_exists == 'true'
-        run: make run-lint
+        run: make lint
 
       - name: Check EOF newline
         shell: bash
@@ -104,11 +104,5 @@ jobs:
           done
           exit $FAIL
 
-  required-checks:
-    name: Code Style Required Checks
-    needs: [ auto-format, lint ]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo '${{ toJSON(needs) }}' | tee /dev/stderr | jq -e 'all(.[]; .result == "success" or .result == "skipped")'
+  
 
