@@ -74,6 +74,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Install golangci-lint
+        run: |
+          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.4.0
+
+
       - id: golangci_configuration
         uses: andstor/file-existence-action@v1
         with:
