@@ -43,11 +43,21 @@ jobs:
       - name: Run ${{ matrix.tool }} ${{ matrix.options }}
         shell: bash
         run: >
-          ${{ matrix.tool }} ${{ matrix.options }} -w
-          $(find .
-          -path './docs' -prune
-          -o -name '*.deepcopy.go' -prune
-          -o -type f -name '*.go' -print)
+          set -euo pipefail
+
+          echo "Running: ${{ matrix.tool }} ${{ matrix.options }}"
+          files=$(find . \
+            -path './docs' -prune \
+            -o -name '*.deepcopy.go' -prune \
+            -o -type f -name '*.go' -print)
+
+          if ! ${{matrix.tool }} ${{ matrix.options }} -w $files; then
+            echo " ${{ matrix.tool }} failed on:"
+            echo "$files"
+            exit 1
+          fi
+
+          echo "${{ matrix.tool }} completed successfully"
 
       - name: Verify ${{ matrix.tool }}
         shell: bash
